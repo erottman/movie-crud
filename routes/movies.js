@@ -24,6 +24,16 @@ router.get('/:id', (req, res, next) => {
   })
 })
 
+router.get('/:id/edit', (req,res,next) => {
+  let id = req.params.id
+  db('movies')
+  .where({id})
+  .first()
+  .then(movie => {
+    res.render('movies/edit', {movie})
+  })
+})
+
 router.post('/', (req, res, next) => {
   let movie = {
       title: req.body.title,
@@ -39,6 +49,25 @@ router.post('/', (req, res, next) => {
   res.redirect(`/movies/${id}`)
   })
 })
+
+router.put('/:id', (req,res,next) => {
+  var id = req.params.id
+  var movie = {
+    title: req.body.title,
+    director: req.body.director,
+    year: req.body.year,
+    my_rating: req.body['my-rating'],
+    poster_url: req.body['poster-url']
+  }
+  db('movies')
+  .update(movie, '*')
+  .where({id})
+  .then(updateMovie => {
+    var id = updatedMovies[0].id
+    res.redirect('/movies/${id}')
+  })
+})
+
 
 router.delete('/:id', (req, res, next) => {
   var id = req.params.id
